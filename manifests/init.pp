@@ -10,12 +10,14 @@
 #
 # $permitted_managers:: IP address or DNS name to allow connections from
 #
+# $enable_authtraps:: Enable authentication traps
 class windows_snmp
 (
   String $community,
   String $syscontact,
   String $syslocation,
-  String $permitted_managers
+  String $permitted_managers,
+  Boolean $enable_authtraps = false
 )
 {
   # Install the Windows Feature
@@ -56,6 +58,16 @@ class windows_snmp
       dsc_valuename => '1',
       dsc_valuedata => $community,
     ;
+  }
+
+  if $enable_authtraps {
+    dsc_registry { 'Enable authentication traps':
+      dsc_ensure    => 'Present',
+      dsc_key       => $reg_basepath,
+      dsc_valuename => 'EnableAuthenticationTraps',
+      dsc_valuedata => '1',
+      require       => Dsc_windowsfeature['SNMP Service'],
+    }
   }
 }
 
