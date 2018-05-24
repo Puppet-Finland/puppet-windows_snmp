@@ -14,17 +14,17 @@
 #
 # $manage_packetfilter:: whether to open port 161 in Windows Firewall (default: true)
 #
-# $allow_address_ipv4:: an array of IP addresses or networks to allow SNMP connections from (default: ['127.0.0.1']).
+# $allow_address_ipv4:: IP address(es) or network(s) to allow SNMP connections from (string or array, default: '127.0.0.1').
 #
 class windows_snmp
 (
-  String        $community,
-  String        $syscontact,
-  String        $syslocation,
-  String        $permitted_managers,
-  Boolean       $enable_authtraps = false,
-  Boolean       $manage_packetfilter = true,
-  Array[String] $allow_address_ipv4 = ['127.0.0.1']
+  String                        $community,
+  String                        $syscontact,
+  String                        $syslocation,
+  String                        $permitted_managers,
+  Boolean                       $enable_authtraps = false,
+  Boolean                       $manage_packetfilter = true,
+  Variant[String,Array[String]] $allow_address_ipv4 = '127.0.0.1'
 )
 {
   # Install the Windows Feature
@@ -79,7 +79,8 @@ class windows_snmp
 
   if $manage_packetfilter {
 
-    $remote_ips = join($allow_address_ipv4, ',')
+    $allow_address_ipv4_array = any2array($allow_address_ipv4)
+    $remote_ips = join($allow_address_ipv4_array, ',')
 
     ::windows_firewall::exception { 'windows_snmp':
       ensure       => 'present',
@@ -94,5 +95,3 @@ class windows_snmp
     }
   }
 }
-
-
