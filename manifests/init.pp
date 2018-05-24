@@ -41,27 +41,27 @@ class windows_snmp
       require    => Dsc_windowsfeature['SNMP Service'],
     ;
     ['Permitted SNMP managers']:
-      dsc_key       => "${reg_basepath}\PermittedManagers",
+      dsc_key       => "${reg_basepath}\\PermittedManagers",
       dsc_valuename => '1',
       dsc_valuedata => $permitted_managers,
     ;
     ['System contact information']:
-      dsc_key       => "${reg_basepath}\RFC1156Agent",
+      dsc_key       => "${reg_basepath}\\RFC1156Agent",
       dsc_valuename => 'sysContact',
       dsc_valuedata => $syscontact,
     ;
     ['System location information']:
-      dsc_key       => "${reg_basepath}\RFC1156Agent",
+      dsc_key       => "${reg_basepath}\\RFC1156Agent",
       dsc_valuename => 'sysLocation',
       dsc_valuedata => $syslocation,
     ;
     ['SNMP trap destination']:
-      dsc_key       => "${reg_basepath}\TrapConfiguration",
+      dsc_key       => "${reg_basepath}\\TrapConfiguration",
       dsc_valuename => '1',
       dsc_valuedata => $permitted_managers,
     ;
     ['SNMP community string']:
-      dsc_key       => "${reg_basepath}\ValidCommunities",
+      dsc_key       => "${reg_basepath}\\ValidCommunities",
       dsc_valuename => '1',
       dsc_valuedata => $community,
     ;
