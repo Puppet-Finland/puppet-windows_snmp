@@ -90,7 +90,7 @@ class windows_snmp
       protocol     => 'UDP',
       local_port   => '161',
       remote_ip    => $remote_ips,
-      display_name => 'SNMP-in',
+      display_name => "SNMP-in from ${remote_ips}",
       description  => "Allow SNMP connections from ${remote_ips} to udp port 161",
     }
   }
