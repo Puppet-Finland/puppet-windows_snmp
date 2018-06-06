@@ -1,6 +1,6 @@
 {
   "name": "puppetfinland-windows_snmp",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Petri Lammi and Samuli Seppänen",
   "summary": "Enable SNMP on Windows",
   "license": "BSD-2-Clause",
