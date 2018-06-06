@@ -27,10 +27,24 @@ class windows_snmp
   Variant[String,Array[String]] $allow_address_ipv4 = '127.0.0.1'
 )
 {
-  # Install the Windows Feature
-  dsc_windowsfeature  { 'SNMP Service':
-    dsc_ensure => 'Present',
-    dsc_name   => 'SNMP-Service',
+
+  # Install the Windows SNMP Feature. This is done differently in
+  # desktop and server versions
+  case $facts['os']['release']['major'] {
+    /(2008 R2|2012 R2|2016)/: {
+      dsc_windowsfeature { 'SNMP Service':
+        dsc_ensure => 'Present',
+        dsc_name   => 'SNMP-Service',
+      }
+      $require = Dsc_windowsfeature['SNMP Service']
+    }
+    default: {
+      dsc_windowsoptionalfeature { 'SNMP Service':
+        dsc_ensure => 'Enable',
+        dsc_name   => 'SNMP',
+      }
+      $require = Dsc_windowsoptionalfeature['SNMP Service']
+    }
   }
 
   $reg_basepath = 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\SNMP\Parameters'
@@ -38,7 +52,7 @@ class windows_snmp
   dsc_registry {
     default:
       dsc_ensure => 'Present',
-      require    => Dsc_windowsfeature['SNMP Service'],
+      require    => $require,
     ;
     ['Permitted SNMP managers']:
       dsc_key       => "${reg_basepath}\\PermittedManagers",
