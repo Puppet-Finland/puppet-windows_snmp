@@ -36,14 +36,14 @@ class windows_snmp
         dsc_ensure => 'Present',
         dsc_name   => 'SNMP-Service',
       }
-      $require = Dsc_windowsfeature['SNMP Service']
+      $feature_require = Dsc_windowsfeature['SNMP Service']
     }
     default: {
       dsc_windowsoptionalfeature { 'SNMP Service':
         dsc_ensure => 'Enable',
         dsc_name   => 'SNMP',
       }
-      $require = Dsc_windowsoptionalfeature['SNMP Service']
+      $feature_require = Dsc_windowsoptionalfeature['SNMP Service']
     }
   }
 
@@ -52,7 +52,7 @@ class windows_snmp
   dsc_registry {
     default:
       dsc_ensure => 'Present',
-      require    => $require,
+      require    => $feature_require,
     ;
     ['Permitted SNMP managers']:
       dsc_key       => "${reg_basepath}\\PermittedManagers",
