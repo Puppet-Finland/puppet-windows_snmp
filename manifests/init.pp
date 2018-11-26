@@ -99,10 +99,10 @@ class windows_snmp
     ::windows_firewall::exception { 'windows_snmp':
       ensure       => 'present',
       direction    => 'in',
-      action       => 'Allow',
-      enabled      => 'yes',
+      action       => 'allow',
+      enabled      => true,
       protocol     => 'UDP',
-      local_port   => '161',
+      local_port   => 161,
       remote_ip    => $remote_ips,
       display_name => "SNMP-in from ${remote_ips}",
       description  => "Allow SNMP connections from ${remote_ips} to udp port 161",
