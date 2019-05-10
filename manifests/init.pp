@@ -31,7 +31,7 @@ class windows_snmp
   # Install the Windows SNMP Feature. This is done differently in
   # desktop and server versions
   case $facts['os']['release']['major'] {
-    /(2008 R2|2012 R2|2016)/: {
+    /(2008 R2|2012 R2|2016|2019)/: {
       dsc_windowsfeature { 'SNMP Service':
         dsc_ensure => 'Present',
         dsc_name   => 'SNMP-Service',
