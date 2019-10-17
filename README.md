@@ -1,7 +1,8 @@
 # windows_snmp
 
 A Puppet module for configuring SNMP (client) feature on Windows and opening up
-holes in to the Windows Firewall.
+holes in to the Windows Firewall. On Windows 10 SNMP Client is managed as a
+capability because the feature has gone missing.
 
 # Usage
 

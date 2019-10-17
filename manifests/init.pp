@@ -1,20 +1,29 @@
-# Setup SNMP (client) feature in Windows
+# @summary Setup SNMP (client) feature in Windows
 #
-# == Parameters:
+# @param community
+#   community string
 #
-# $community:: community string
+# @param syscontact
+#   system contact, usually an email address
 #
-# $syscontact:: system contact, usually an email address
+# @param syslocation
+#   location of the node
 #
-# $syslocation:: location of the node
+# @param permitted_managers
+#   IP address or DNS name to allow connections from
 #
-# $permitted_managers:: IP address or DNS name to allow connections from
+# @param enable_authtraps
+#   Enable authentication traps
 #
-# $enable_authtraps:: Enable authentication traps (default: false)
+# @param manage_packetfilter
+#   Whether to open port 161 in Windows Firewall
 #
-# $manage_packetfilter:: whether to open port 161 in Windows Firewall (default: true)
+# @param snmp_client_version
+#   The version of SNMP.Client capability to install. Only affects recent
+#   Windows 10 versions where SNMP is not feature but a capability.
 #
-# $allow_address_ipv4:: IP address(es) or network(s) to allow SNMP connections from (string or array, default: '127.0.0.1').
+# @param allow_address_ipv4
+#   IP address(es) or network(s) to allow SNMP connections from
 #
 class windows_snmp
 (
@@ -24,6 +33,7 @@ class windows_snmp
   String                        $permitted_managers,
   Boolean                       $enable_authtraps = false,
   Boolean                       $manage_packetfilter = true,
+  String                        $snmp_client_version = '0.0.1.0',
   Variant[String,Array[String]] $allow_address_ipv4 = '127.0.0.1'
 )
 {
@@ -37,6 +47,21 @@ class windows_snmp
         dsc_name   => 'SNMP-Service',
       }
       $feature_require = Dsc_windowsfeature['SNMP Service']
+    }
+    /(10)/: {
+      # SNMP turned from a Feature to a Capability at some point. While Powershell DSC has support for WindowsCapabilities the Puppet wrapper
+      # has not arrived to puppetlabs-dsc yet:
+      #
+      # <https://github.com/PowerShell/ComputerManagementDsc/tree/dev/DSCResources/MSFT_WindowsCapability>
+      # <https://github.com/puppetlabs/puppetlabs-dsc/tree/master/lib/puppet/type>
+      #
+      # So, for now, add the feature with raw Powershell.
+      exec { 'add-snmp-capability':
+        command  => "Add-WindowsCapability -Online -Name \"SNMP.Client~~~~${snmp_client_version}\"",
+        unless   => 'if (Get-Service -ErrorAction SilentlyContinue SNMP) { exit 0 }',
+        provider => 'powershell',
+      }
+      $feature_require = Exec['add-snmp-capability']
     }
     default: {
       dsc_windowsoptionalfeature { 'SNMP Service':
