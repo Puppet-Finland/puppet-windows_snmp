@@ -31,6 +31,7 @@ class windows_snmp
   String                        $syscontact,
   String                        $syslocation,
   String                        $permitted_managers,
+  Boolean                       $manage = true,
   Boolean                       $enable_authtraps = false,
   Boolean                       $manage_packetfilter = true,
   String                        $snmp_client_version = '0.0.1.0',
@@ -38,6 +39,7 @@ class windows_snmp
 )
 {
 
+  if $manage {
   # Install the Windows SNMP Feature. This is done differently in
   # desktop and server versions
   case $facts['os']['release']['major'] {
@@ -132,5 +134,6 @@ class windows_snmp
       display_name => "SNMP-in from ${remote_ips}",
       description  => "Allow SNMP connections from ${remote_ips} to udp port 161",
     }
+  }
   }
 }
