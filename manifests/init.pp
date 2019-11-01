@@ -63,6 +63,10 @@ class windows_snmp
       }
       $feature_require = Exec['add-snmp-capability']
     }
+    undef: {
+      # We can end up here at least on Windows 10 ARM64. We can't do anything
+      # in this case. Because SNMP client is not installable.
+    }
     default: {
       dsc_windowsoptionalfeature { 'SNMP Service':
         dsc_ensure => 'Enable',
